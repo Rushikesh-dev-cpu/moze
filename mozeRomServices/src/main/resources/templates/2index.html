@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MozeMate - Student Roommate Board</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hCgT2B2LEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --moze-blue: #007bff;
+            --moze-dark-blue: #0056b3;
+            --moze-gradient: linear-gradient(45deg, #007bff, #00c6ff);
+            --moze-gray: #f0f2f5;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--moze-gray);
+            color: #343a40;
+        }
+
+        .bg-moze-blue {
+            background-color: var(--moze-blue) !important;
+        }
+
+        .btn-moze {
+            background-image: var(--moze-gradient);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-moze:hover {
+            background-position: right center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+            transform: translateY(-2px);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.75rem;
+            color: var(--moze-dark-blue) !important;
+        }
+
+        .hero-section {
+            background: var(--moze-gradient);
+            color: white;
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section .container-xl {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: #f0f2f5;
+            -webkit-clip-path: polygon(100% 0, 0 100%, 100% 100%);
+            clip-path: polygon(100% 0, 0 100%, 100% 100%);
+        }
+
+        .listing-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .listing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .listing-card img {
+            transition: transform 0.5s ease;
+        }
+
+        .listing-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        .card-img-top {
+            filter: grayscale(0.2);
+            transition: filter 0.3s ease;
+        }
+
+        .listing-card:hover .card-img-top {
+            filter: grayscale(0);
+        }
+
+        .bed-icon-group i {
+            font-size: 1.25rem;
+            margin-right: 0.25rem;
+            transition: color 0.3s ease;
+        }
+        .bed-icon-group .bi-person-fill {
+            color: var(--moze-blue);
+        }
+        .bed-icon-group .bi-person {
+            color: #d1d9e6;
+        }
+
+        .form-section, .filter-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-section:hover {
+             transform: translateY(-5px);
+             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .btn-ghost {
+            background-color: transparent;
+            border: 1px solid var(--moze-blue);
+            color: var(--moze-blue);
+            transition: all 0.3s ease;
+        }
+        .btn-ghost:hover {
+            background-color: var(--moze-blue);
+            color: white;
+        }
+        
+        .ai-badge {
+            font-size: 0.75rem;
+            padding: 0.25em 0.5em;
+        }
+
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0,123,255,.25);
+            border-color: var(--moze-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container-xl">
+            <a class="navbar-brand" href="#">MozeMate</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#listings">Listings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#post-form">Post a Room</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#favorites">Favorites</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section text-center mb-5">
+        <div class="container-xl">
+            <h1 class="display-3 fw-bold">Find Your Perfect Roommate</h1>
+            <p class="lead mt-3">Connect with fellow students at G.S.Moze College of Engineering in Pune to find a place to stay.</p>
+            <button class="btn btn-moze btn-lg mt-3" data-bs-toggle="modal" data-bs-target="#postListingModal">Post Your Listing</button>
+        </div>
+    </section>
+
+    <main class="container-xl">
+        <section id="filters" class="p-4 bg-white rounded-3 shadow-sm mb-4">
+            <h2 class="h5 mb-3">Filter Listings</h2>
+            <form id="filterForm" class="row g-3">
+                <div class="col-md-3">
+                    <label for="filterLocation" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="filterLocation" placeholder="e.g., Balewadi, Wakad">
+                </div>
+                <div class="col-md-2">
+                    <label for="filterType" class="form-label">Type</label>
+                    <select id="filterType" class="form-select">
+                        <option value="">All</option>
+                        <option value="Room">Room</option>
+                        <option value="Flat">Flat</option>
+                        <option value="PG">PG</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="filterRent" class="form-label">Max Rent</label>
+                    <input type="number" class="form-control" id="filterRent" min="0" placeholder="e.g., 5000">
+                </div>
+                <div class="col-md-2">
+                    <label for="filterYear" class="form-label">Seeking Year</label>
+                    <select id="filterYear" class="form-select">
+                        <option value="">Any</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="Final Year">Final Year</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-moze w-100">Apply Filters</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="listings" class="mb-5">
+            <h2 class="mb-4">Recent Listings <span id="listingCount" class="badge bg-secondary ms-2"></span></h2>
+            <div id="listingGrid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                </div>
+        </section>
+
+        <section id="post-form" class="mb-5">
+            <div class="form-section">
+                <h2 class="mb-4">Post a New Listing</h2>
+                <form id="listingForm">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="ownerName" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="ownerName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="roomType" class="form-label">Type of Place</label>
+                            <select id="roomType" class="form-select" required>
+                                <option value="">Choose...</option>
+                                <option value="Room">Room</option>
+                                <option value="Flat">Flat</option>
+                                <option value="PG">PG</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="location" class="form-label">Location <small class="text-muted">(e.g., Wakad, Balewadi)</small></label>
+                            <input type="text" class="form-control" id="location" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="rent" class="form-label">Rent per person (INR)</label>
+                            <input type="number" class="form-control" id="rent" min="0" required>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="totalBeds" class="form-label">Total Beds/Occupants</label>
+                            <input type="number" class="form-control" id="totalBeds" min="1" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="occupiedBeds" class="form-label">Occupied Beds/Occupants</label>
+                            <input type="number" class="form-control" id="occupiedBeds" min="0" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="seekingYear" class="form-label">Seeking Student Year</label>
+                        <select id="seekingYear" class="form-select" required>
+                            <option value="">Choose...</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="Final Year">Final Year</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">Tags <small class="text-muted">(e.g., non-smoker, vegetarian)</small></label>
+                        <input type="text" class="form-control" id="tags">
+                    </div>
+                    <div class="mb-3">
+                        <label for="imageURL" class="form-label">Image URL (Optional)</label>
+                        <input type="url" class="form-control" id="imageURL">
+                    </div>
+                    <button type="submit" class="btn btn-moze w-100">Post Listing</button>
+                </form>
+            </div>
+        </section>
+        
+        <section id="favorites" class="mb-5">
+            <h2 class="mb-4">My Favorites</h2>
+            <div id="favoritesGrid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <p class="text-muted" id="noFavoritesMsg">No favorites saved yet.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="contactModalLabel">Contact Owner</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Contacting <strong id="ownerNameDisplay"></strong> about listing for <span id="roomTypeDisplay"></span> in <span id="locationDisplay"></span>.</p>
+                    <textarea class="form-control" rows="4" placeholder="Type your message here..." required></textarea>
+                    <p class="text-muted mt-2"><small>This is a demo. A real contact form would send an email or message.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-moze" id="sendMessageBtn">Send Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">Listing Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="detailsModalBody"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- DATA & STATE MANAGEMENT ---
+            const LS_KEY = 'mozeMateListings';
+            const LS_FAVORITES_KEY = 'mozeMateFavorites';
+            
+            const sampleListings = [
+                { id: '1', owner: 'Rohan Sharma', type: 'Flat', location: 'Wakad', rent: 5500, totalBeds: 3, occupiedBeds: 2, seekingYear: '3rd Year', description: '2bhk flat near college, looking for a clean and tidy roommate. Has a great view and is well-ventilated.', tags: ['clean', 'non-smoker'], image: 'https://source.unsplash.com/400x300/?flat-interior,pune' },
+                { id: '2', owner: 'Priya Singh', type: 'Room', location: 'Balewadi', rent: 4000, totalBeds: 2, occupiedBeds: 0, seekingYear: '2nd Year', description: 'A single room available in a cozy apartment. Looking for a quiet, studious roommate. All amenities included.', tags: ['quiet', 'studious', 'female-only'], image: 'https://source.unsplash.com/400x300/?student-room,dormitory' },
+                { id: '3', owner: 'Akash Jadhav', type: 'PG', location: 'Hinjewadi', rent: 6000, totalBeds: 4, occupiedBeds: 3, seekingYear: 'Final Year', description: 'PG with meals included. We are a bunch of friendly final year students. Looking for a chilled-out roommate to join the crew.', tags: ['friendly', 'late-night-study'], image: 'https://source.unsplash.com/400x300/?hostel-room,pune' },
+                { id: '4', owner: 'Sneha Patel', type: 'Flat', location: 'Aundh', rent: 7500, totalBeds: 2, occupiedBeds: 1, seekingYear: '3rd Year', description: 'Spacious 1bhk flat. Looking for a male roommate. Shared space, but plenty of privacy. Rent is negotiable. Very close to the market and restaurants.', tags: ['spacious', 'market-nearby'], image: 'https://source.unsplash.com/400x300/?apartment-interior,kitchen' }
+            ];
+
+            function getListings() {
+                let listings = JSON.parse(localStorage.getItem(LS_KEY));
+                if (!listings || listings.length === 0) {
+                    listings = sampleListings;
+                    localStorage.setItem(LS_KEY, JSON.stringify(listings));
+                }
+                return listings;
+            }
+
+            function getFavorites() {
+                return JSON.parse(localStorage.getItem(LS_FAVORITES_KEY)) || [];
+            }
+            
+            function saveFavorites(favorites) {
+                localStorage.setItem(LS_FAVORITES_KEY, JSON.stringify(favorites));
+            }
+            
+            // --- UI RENDER FUNCTIONS ---
+            
+            function renderBedIcons(total, occupied) {
+                let icons = '';
+                for (let i = 0; i < total; i++) {
+                    if (i < occupied) {
+                        icons += '<i class="bi bi-person-fill" role="img" aria-label="Occupied Bed"></i>';
+                    } else {
+                        icons += '<i class="bi bi-person" role="img" aria-label="Available Bed"></i>';
+                    }
+                }
+                return `<div class="bed-icon-group mb-2">${icons}</div>`;
+            }
+
+            function createListingCard(listing, isFavorite = false) {
+                const availableBeds = listing.totalBeds - listing.occupiedBeds;
+                const card = document.createElement('div');
+                card.classList.add('col');
+                card.innerHTML = `
+                    <div class="card h-100 shadow-sm listing-card" data-listing-id="${listing.id}">
+                        <img src="${listing.image || 'https://source.unsplash.com/400x300/?room-interior,dorm,pune'}" class="card-img-top" alt="Listing image" style="height: 200px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">${listing.location} <small class="text-muted fw-normal">(${listing.type})</small></h5>
+                                <button class="btn btn-sm ${isFavorite ? 'btn-danger' : 'btn-outline-danger'}" data-favorite-id="${listing.id}">
+                                    <i class="bi bi-heart${isFavorite ? '-fill' : ''}"></i>
+                                </button>
+                            </div>
+                            <h6 class="card-subtitle mb-2 text-muted">₹${listing.rent} / month</h6>
+                            ${renderBedIcons(listing.totalBeds, listing.occupiedBeds)}
+                            <p class="card-text text-truncate">${listing.description}</p>
+                            <ul class="list-unstyled d-flex flex-wrap gap-2 mt-auto">
+                                <li class="badge bg-secondary">${listing.seekingYear}</li>
+                                <li class="badge bg-success">${availableBeds} Bed${availableBeds !== 1 ? 's' : ''} Available</li>
+                                ${listing.tags.map(tag => `<li class="badge bg-info text-dark">${tag}</li>`).join('')}
+                            </ul>
+                            <div class="d-flex justify-content-between mt-3">
+                                <button class="btn btn-moze btn-sm" data-bs-toggle="modal" data-bs-target="#contactModal" data-owner="${listing.owner}" data-type="${listing.type}" data-location="${listing.location}">
+                                    <i class="bi bi-chat-dots-fill"></i> Contact
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#detailsModal" data-listing-id="${listing.id}">
+                                    <i class="bi bi-info-circle"></i> Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return card;
+            }
+
+            function renderListings(listings) {
+                const container = document.getElementById('listingGrid');
+                container.innerHTML = ''; // Clear previous listings
+                if (listings.length === 0) {
+                    container.innerHTML = '<p class="text-center text-muted col-12">No listings found matching your criteria.</p>';
+                    document.getElementById('listingCount').textContent = '0';
+                    return;
+                }
+                const favorites = getFavorites();
+                listings.forEach(listing => {
+                    const isFavorite = favorites.includes(listing.id);
+                    container.appendChild(createListingCard(listing, isFavorite));
+                });
+                document.getElementById('listingCount').textContent = listings.length;
+            }
+
+            function renderFavorites() {
+                const container = document.getElementById('favoritesGrid');
+                container.innerHTML = ''; // Clear
+                const allListings = getListings();
+                const favoriteIds = getFavorites();
+                
+                const favoriteListings = allListings.filter(l => favoriteIds.includes(l.id));
+
+                if (favoriteListings.length === 0) {
+                    document.getElementById('noFavoritesMsg').style.display = 'block';
+                } else {
+                    document.getElementById('noFavoritesMsg').style.display = 'none';
+                    favoriteListings.forEach(listing => {
+                        container.appendChild(createListingCard(listing, true));
+                    });
+                }
+            }
+
+            // --- EVENT HANDLERS ---
+            
+            const listingForm = document.getElementById('listingForm');
+            listingForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const newListing = {
+                    id: crypto.randomUUID(), // Simple unique ID
+                    owner: document.getElementById('ownerName').value,
+                    type: document.getElementById('roomType').value,
+                    location: document.getElementById('location').value,
+                    rent: parseInt(document.getElementById('rent').value),
+                    totalBeds: parseInt(document.getElementById('totalBeds').value),
+                    occupiedBeds: parseInt(document.getElementById('occupiedBeds').value),
+                    seekingYear: document.getElementById('seekingYear').value,
+                    description: document.getElementById('description').value,
+                    tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                    image: document.getElementById('imageURL').value || 'https://source.unsplash.com/400x300/?house-interior,pune',
+                    mood: analyzeSentiment(document.getElementById('description').value)
+                };
+
+                const listings = getListings();
+                listings.unshift(newListing); // Add to the top
+                localStorage.setItem(LS_KEY, JSON.stringify(listings));
+                
+                alert('Listing posted successfully!');
+                listingForm.reset();
+                renderListings(listings);
+                // Simple auto-scroll to listings section
+                document.getElementById('listings').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            const filterForm = document.getElementById('filterForm');
+            filterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const location = document.getElementById('filterLocation').value.toLowerCase();
+                const type = document.getElementById('filterType').value;
+                const maxRent = parseInt(document.getElementById('filterRent').value);
+                const year = document.getElementById('filterYear').value;
+                
+                const filteredListings = getListings().filter(listing => {
+                    const matchesLocation = location ? listing.location.toLowerCase().includes(location) : true;
+                    const matchesType = type ? listing.type === type : true;
+                    const matchesRent = isNaN(maxRent) ? true : listing.rent <= maxRent;
+                    const matchesYear = year ? listing.seekingYear === year : true;
+                    return matchesLocation && matchesType && matchesRent && matchesYear;
+                });
+                
+                renderListings(filteredListings);
+            });
+            
+            // Toggle favorite on card click
+            document.getElementById('listingGrid').addEventListener('click', e => {
+                const favoriteBtn = e.target.closest('[data-favorite-id]');
+                if (favoriteBtn) {
+                    const id = favoriteBtn.dataset.favoriteId;
+                    let favorites = getFavorites();
+                    if (favorites.includes(id)) {
+                        favorites = favorites.filter(favId => favId !== id);
+                        favoriteBtn.classList.remove('btn-danger');
+                        favoriteBtn.classList.add('btn-outline-danger');
+                        favoriteBtn.querySelector('i').classList.replace('bi-heart-fill', 'bi-heart');
+                    } else {
+                        favorites.push(id);
+                        favoriteBtn.classList.remove('btn-outline-danger');
+                        favoriteBtn.classList.add('btn-danger');
+                        favoriteBtn.querySelector('i').classList.replace('bi-heart', 'bi-heart-fill');
+                    }
+                    saveFavorites(favorites);
+                    renderFavorites(); // Update favorites section
+                    e.stopPropagation();
+                }
+            });
+
+            // Contact Modal listener
+            const contactModal = document.getElementById('contactModal');
+            contactModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const ownerName = button.getAttribute('data-owner');
+                const roomType = button.getAttribute('data-type');
+                const location = button.getAttribute('data-location');
+                
+                document.getElementById('ownerNameDisplay').textContent = ownerName;
+                document.getElementById('roomTypeDisplay').textContent = roomType;
+                document.getElementById('locationDisplay').textContent = location;
+            });
+            
+            document.getElementById('sendMessageBtn').addEventListener('click', () => {
+                alert('Message sent successfully!');
+                const modal = bootstrap.Modal.getInstance(contactModal);
+                modal.hide();
+            });
+            
+            // Listing Details Modal listener
+            const detailsModal = document.getElementById('detailsModal');
+            detailsModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const listingId = button.getAttribute('data-listing-id');
+                const listing = getListings().find(l => l.id === listingId);
+                const modalBody = document.getElementById('detailsModalBody');
+                if (listing) {
+                    modalBody.innerHTML = `
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <img src="${listing.image}" class="img-fluid rounded-3 mb-3" alt="Listing image">
+                                <p><strong>Owner:</strong> ${listing.owner}</p>
+                                <p><strong>Location:</strong> ${listing.location}</p>
+                                <p><strong>Rent:</strong> ₹${listing.rent} / month</p>
+                                <p><strong>Room Type:</strong> ${listing.type}</p>
+                                <p><strong>Seeking:</strong> ${listing.seekingYear}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Description:</h5>
+                                <p>${listing.description}</p>
+                                <h5>Occupancy:</h5>
+                                ${renderBedIcons(listing.totalBeds, listing.occupiedBeds)}
+                                <p>${listing.totalBeds - listing.occupiedBeds} of ${listing.totalBeds} beds available</p>
+                                <h5>Tags:</h5>
+                                ${listing.tags.map(tag => `<span class="badge bg-info text-dark me-1">${tag}</span>`).join('')}
+                                <hr>
+                                <h5>Mood Indicator (Demo ML)</h5>
+                                <p>This listing has a <span class="badge ${listing.mood === 'Positive' ? 'bg-success' : listing.mood === 'Negative' ? 'bg-danger' : 'bg-secondary'}">${listing.mood}</span> sentiment.</p>
+                                <h5>Recommended Listings (Demo AI)</h5>
+                                <div id="recommendedListings"></div>
+                            </div>
+                        </div>
+                    `;
+                    renderRecommendations(listing);
+                }
+            });
+            
+            // --- AI/ML DEMO FEATURES (CLIENT-SIDE) ---
+            
+            // 1. Sentiment Analysis (client-side lexicon)
+            function analyzeSentiment(text) {
+                const positiveWords = ['clean', 'friendly', 'spacious', 'great', 'well-ventilated', 'cozy', 'chilled', 'lovely', 'nice', 'safe', 'good'];
+                const negativeWords = ['loud', 'messy', 'cramped', 'strict', 'unfriendly', 'noisy'];
+                let score = 0;
+                const lowerText = text.toLowerCase();
+                positiveWords.forEach(word => {
+                    if (lowerText.includes(word)) score++;
+                });
+                negativeWords.forEach(word => {
+                    if (lowerText.includes(word)) score--;
+                });
+                if (score > 0) return 'Positive';
+                if (score < 0) return 'Negative';
+                return 'Neutral';
+            }
+            
+            // 2. Roommate Recommendation (simple similarity score)
+            const userProfile = {
+                year: '3rd Year',
+                budget: 6000,
+                location: 'Wakad',
+                tags: ['clean', 'quiet']
+            };
+            
+            function computeSimilarity(listing) {
+                let score = 0;
+                // Year match (high weight)
+                if (listing.seekingYear === userProfile.year) {
+                    score += 5;
+                }
+                // Location match (medium weight)
+                if (listing.location.toLowerCase().includes(userProfile.location.toLowerCase())) {
+                    score += 3;
+                }
+                // Budget match (negative weight if too expensive)
+                if (listing.rent <= userProfile.budget) {
+                    score += 2;
+                } else {
+                    score -= 1; // Slight penalty for exceeding budget
+                }
+                // Tag match (low weight per tag)
+                userProfile.tags.forEach(userTag => {
+                    if (listing.tags.includes(userTag)) {
+                        score += 1;
+                    }
+                });
+                return score;
+            }
+            
+            function renderRecommendations(currentListing) {
+                const allListings = getListings();
+                const recommendations = allListings
+                    .filter(l => l.id !== currentListing.id)
+                    .map(listing => ({
+                        ...listing,
+                        score: computeSimilarity(listing)
+                    }))
+                    .sort((a, b) => b.score - a.score)
+                    .slice(0, 3);
+                
+                const recContainer = document.getElementById('recommendedListings');
+                recContainer.innerHTML = '';
+                if (recommendations.length > 0) {
+                    recommendations.forEach(rec => {
+                        const card = document.createElement('div');
+                        card.classList.add('card', 'mb-2');
+                        card.innerHTML = `
+                            <div class="card-body p-3">
+                                <h6 class="card-subtitle mb-2">${rec.location} (${rec.type})</h6>
+                                <p class="card-text mb-1"><small>₹${rec.rent} | ${rec.seekingYear}</small></p>
+                            </div>
+                        `;
+                        recContainer.appendChild(card);
+                    });
+                } else {
+                    recContainer.innerHTML = '<p class="text-muted"><small>No similar listings found.</small></p>';
+                }
+            }
+            
+            // 3. Auto-suggest tags (regex-based)
+            const descriptionInput = document.getElementById('description');
+            const tagsInput = document.getElementById('tags');
+            
+            const commonTags = ['vegetarian', 'non-smoker', 'late-night-study', 'quiet', 'party-friendly', 'early-riser', 'clean', 'studious', 'chilled', 'foodie'];
+            
+            descriptionInput.addEventListener('input', () => {
+                const text = descriptionInput.value.toLowerCase();
+                const suggestedTags = [];
+                commonTags.forEach(tag => {
+                    const regex = new RegExp(`\\b${tag}\\b`, 'i'); // Word boundary match
+                    if (regex.test(text) && !tagsInput.value.includes(tag)) {
+                        suggestedTags.push(tag);
+                    }
+                });
+                if (suggestedTags.length > 0) {
+                    const existingTags = tagsInput.value.split(',').map(t => t.trim()).filter(t => t);
+                    const newTags = [...new Set([...existingTags, ...suggestedTags])].join(', ');
+                    tagsInput.value = newTags;
+                }
+            });
+
+            // Initial render on page load
+            renderListings(getListings());
+            renderFavorites();
+        });
+    </script>
+</body>
+</html>
